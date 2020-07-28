@@ -10,11 +10,15 @@ import UIKit
 
 class ViewController: UIViewController {
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        // Do any additional setup after loading the view.
+    
+    @IBAction func adiciona(_ sender: Any) {
+        
+        let alimento            = "lasanha";
+        let felicidade:String   = "5";
+        
+        print("comi \(alimento) e fiquei com felicidade \(felicidade)");
     }
-
+    
 
 }
 
