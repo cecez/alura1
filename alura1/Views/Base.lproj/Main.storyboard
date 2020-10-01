@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16097.2" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="ywE-zy-Dvh">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16097.3" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="ywE-zy-Dvh">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
@@ -42,13 +42,29 @@
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="CaE-by-tO6">
-                                <rect key="frame" x="164" y="314" width="65" height="30"/>
+                                <rect key="frame" x="175" y="815" width="65" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" title="Adicionar"/>
                                 <connections>
                                     <action selector="adiciona:" destination="BYZ-38-t0r" eventType="touchUpInside" id="wyO-GQ-MMU"/>
                                 </connections>
                             </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Itens:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="E6S-g1-IeM">
+                                <rect key="frame" x="82" y="302" width="42" height="21"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="Cx7-RL-P4I">
+                                <rect key="frame" x="0.0" y="345" width="414" height="439"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                                <connections>
+                                    <outlet property="dataSource" destination="BYZ-38-t0r" id="BUc-KQ-XG8"/>
+                                    <outlet property="delegate" destination="BYZ-38-t0r" id="iC7-g4-Xfc"/>
+                                </connections>
+                            </tableView>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
@@ -56,12 +72,13 @@
                     <navigationItem key="navigationItem" id="T6x-Jn-Ibd"/>
                     <connections>
                         <outlet property="felicidadeTextField" destination="MUk-Is-mc0" id="lsD-BR-gq5"/>
+                        <outlet property="itensTableView" destination="Cx7-RL-P4I" id="mie-D0-uea"/>
                         <outlet property="nomeTextField" destination="DIO-2s-g3A" id="JhF-eT-cWb"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1601" y="138"/>
+            <point key="canvasLocation" x="1600.0000000000002" y="137.94642857142856"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="HrY-Eo-O8o">
@@ -105,7 +122,7 @@
                     <navigationItem key="navigationItem" id="gdT-sj-MAJ">
                         <barButtonItem key="rightBarButtonItem" title="Add" id="T5O-jX-IMq">
                             <connections>
-                                <segue destination="BYZ-38-t0r" kind="show" id="68m-l5-qLt"/>
+                                <segue destination="BYZ-38-t0r" kind="show" identifier="adicionar" id="68m-l5-qLt"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>

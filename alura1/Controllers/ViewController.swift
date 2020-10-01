@@ -8,15 +8,105 @@
 
 import UIKit
 
-class ViewController: UIViewController {
+protocol AdicionaRefeicaoDelegate {
+    func adicionaRefeicao(_ refeicao: Refeicao)
+}
+
+class ViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, AdicionaItensDelegate {
     
-    var tableViewController: RefeicoesTableViewController?
+    // MARK: - Atributos
+    var delegate: AdicionaRefeicaoDelegate?
+    var itens: [Item] = []
+    var itensSelecionados: [Item] = []
     
+    // MARK: - AdicionaItensDelegate
+    func add(_ item: Item) {
+        
+        itens.append(item)
+        ItemDao().save(itens)
+        
+        if let tableView = itensTableView {
+            tableView.reloadData()
+        } else {
+            // exibe alerta de erro
+            Alerta(controller: self).exibe(mensagem: "não foi possível atualizar a tabela")
+        }
+        
+    }
+    
+    
+    // MARK: - UITableViewDataSource
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return itens.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let celula              = UITableViewCell(style: .default, reuseIdentifier: nil)
+        celula.textLabel?.text  = itens[indexPath.row].nome
+        
+        return celula
+    }
+    
+    // MARK: - UITableViewDelegate
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+                
+        // obtém célula selecionada
+        guard let celula = tableView.cellForRow(at: indexPath) else { return }
+        
+        // item (de)selecionado
+        let item = itens[indexPath.row]
+        
+        // gerencia seleção/deseleção dos itens
+        if celula.accessoryType == .none {      // selecionou item
+            celula.accessoryType = .checkmark
+            
+            // adiciona item selecionado
+            itensSelecionados.append(item)
+        } else {                                // deselecionou item
+            celula.accessoryType = .none
+            
+            // se encontrar item, remove dos itens selecionados
+            if let position = itensSelecionados.firstIndex(of: item) {
+                itensSelecionados.remove(at: position)
+            }
+        }
+    }
+    
+    // MARK: - IBOutlets
     @IBOutlet var nomeTextField: UITextField?
     @IBOutlet var felicidadeTextField: UITextField?
-
+    @IBOutlet weak var itensTableView: UITableView?
     
-    @IBAction func adiciona(_ sender: Any) {
+    // MARK: View Life Cycle
+    override func viewDidLoad() {
+        let botaoAdicionaItem = UIBarButtonItem(title: "adicionar", style: .plain, target: self, action: #selector(self.adicionarItem))
+        
+        navigationItem.rightBarButtonItem = botaoAdicionaItem
+        
+        recuperaItens()
+    }
+    
+    func recuperaItens() {
+        itens = ItemDao().recupera()
+    }
+    
+    // Permitir esconder o teclado clicando fora dos inputs e tableview
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        view.endEditing(true)
+    }
+    
+    @objc func adicionarItem() {
+        
+        // referência para viewController de adição de itens
+        let adicionarItem = AdicionarItensViewController(delegate: self)
+        
+        // exibe view programaticamente
+        navigationController?.pushViewController(adicionarItem, animated: true)
+    }
+    
+    // obtém dados do formulário
+    // cria e retorna Refeicao
+    func recuperaRefeicaoDoFormulario() -> Refeicao? {
         
         // versão if-let
         
@@ -37,30 +127,39 @@ class ViewController: UIViewController {
         // versão guard-let
         
         guard let nomeDaRefeicao = nomeTextField?.text else {
-            print("nome de refeicao invalido")
-            return
+            return nil
         }
         
         guard let felicidadeDaRefeicao = felicidadeTextField?.text else {
-            print("felicidade invalida")
-            return
+            return nil
         }
         
         guard let felicidadeDaRefeicaoInt = Int(felicidadeDaRefeicao) else {
-            print("falha ao converter felicidade para Int")
-            return
+            return nil
         }
         
         // cria refeição
-        let refeicao = Refeicao(nome: nomeDaRefeicao, felicidade: felicidadeDaRefeicaoInt)
+        let refeicao = Refeicao(nome: nomeDaRefeicao, felicidade: felicidadeDaRefeicaoInt, itens: itensSelecionados)
         
-        print("comi \(refeicao.nome) e fiquei com felicidade \(refeicao.felicidade)")
+        return refeicao
+    }
+    
+
+    // MARK: - IBActions
+    
+    // adiciona nova Refeição
+    // volta para tela anterior
+    @IBAction func adiciona(_ sender: Any) {
         
-        // adiciona refeição
-        tableViewController?.adicionaRefeicao(refeicao)
-        
-        // faz o "pop" da view
-        navigationController?.popViewController(animated: true)
+        if let refeicao = recuperaRefeicaoDoFormulario() {
+            // adiciona refeição
+            delegate?.adicionaRefeicao(refeicao)
+            
+            // faz o "pop" da view
+            navigationController?.popViewController(animated: true)
+        } else {
+            Alerta(controller: self).exibe(mensagem: "Dados de refeição inválidos.")
+        }
         
     }
     
